@@ -1,12 +1,11 @@
-function [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
+function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
 % Function to generate simulated data - pairwise comparisons and mean
 % opinion scores from the true quality scores
 % 
-% [pwc_mat, mos_mat, a,b,c] = gen_data(q,datasets)
+% [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
 % 
-% q - true, ground truth quality scores (for all datasets)
-% datasets - array with the number of conditions in each of the datasets in
-% the same order as in q
+% q_true - ground truth quality scores (for all datasets)
+% params - structure explaining
 %
 % returns:
 % pwc_mat - NxN matrix of pairwise comparisons, where N - is the total number of
@@ -16,10 +15,9 @@ function [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
 % mos_mat - NxO matrix with rating measurements, where N - number of conditions,
 % and O is the number of observers. Each element is either mos_mat(ii,oo) -
 % rating score assigned by an observer oo to condition ii, or NaN - if the
-% observer did not rate the condtios.
+% observer did not rate the conditions.
 % a,b,c are the parameters relating ground truth quality scores q, rating
 % and pairwise comparison data.
-    %%
 
 % Sigma cumulative density function defines the relationship between
 % the probability of being better and distance in the quality scale
@@ -37,13 +35,14 @@ function [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
     end
 
     sigma_cdf = 1.4826;
+    
     %% Generate PWC matrix
+    
     pwc_mat = zeros(sum(params.dataset_sizes));
     % Within dataset comparisons = (n^2 - n), where n is the size of the
     % dataset, everything compared to everything
     for ii=1:numel(params.dataset_sizes)
         C_ds = zeros(params.dataset_sizes(ii));
-
         rid_st = sum(params.dataset_sizes(1:(ii-1)))+1; 
         rid_end = rid_st+params.dataset_sizes(ii)-1; 
         q = q_true(rid_st:rid_end);
@@ -59,13 +58,13 @@ function [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
     % Generate cross-dataset comparisons - overall number of comparisons is
     % total number of conditions in two datasets being connected, i.e.
     % datasets(ii) + datasets(ii+1)
-
     start_id1 = 1;
     for ii = 1:(numel(params.dataset_sizes)-1)
         start_id2 = start_id1+params.dataset_sizes(ii);
         q_ids1 = start_id1:start_id1+params.dataset_sizes(ii)-1;
         q_ids2 = start_id2:start_id2+params.dataset_sizes(ii+1)-1;
 
+        % 
         for jj=1:params.numb_cross_ds_pairs(ii)
             cmps = 0;
             q_ids1s = q_ids1(randperm(length(q_ids1)));
@@ -83,9 +82,13 @@ function [pwc_mat, mos_mat, a, b, c] = gen_data(q_true, params)
     end
 
     %% Generate MOS matrix 
-    % Generate a, b and c at random.
+    % Each dataset has the rating scores generated from
+    % N(a*q_true+b,c*sigma/sqrt(2))
+    % Generate a for each dataset at random from 0 5 interval
     a = randi([5,10],1,numel(params.dataset_sizes));
+    % Generate bs at random
     b = a*rand();
+    % Generate cs at random
     c = rand(1,numel(params.dataset_sizes))+rand(1,numel(params.dataset_sizes));
 
     % Matrix with rating scores
