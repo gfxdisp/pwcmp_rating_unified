@@ -4,14 +4,12 @@ Code for scaling together the results of pairwise comparison and rating experime
 
 ## Usage
 
-
 ```
 % Run an example
 
 example.m
 
 ```
-
 
 ## Literature
 
@@ -22,7 +20,6 @@ When using the code, please cite [1]:
 We make use of the pw_scale function [2]:
 
 [2] M. Perez-Ortiz and R. K. Mantiuk, “A practical guide and software for analysing pairwise comparison experiments”, arXiv Stat.AP, 2017, accessible at https://arxiv.org/abs/1712.03686
-
 
 ## License
 
