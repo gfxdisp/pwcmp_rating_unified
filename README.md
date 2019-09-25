@@ -9,7 +9,7 @@ If using the code please cite:
 ## Usage
 
 The code for this example can be found in the examples folder (example1.m). 
-To produce a unified scale we need a pairwise comparison matrix D (NxN) and 
+To produce a unified scale we need a pairwise comparison matrix C (NxN) and 
 a rating matrix M (NxK), where N is the total number of conditions and K is 
 the total number of subjects in rating experiments.
 
@@ -18,7 +18,7 @@ Both datasets contain pairwise comparisons and rating measurements.
 
 Matrix with pairwise comparisons for DS1 has N1 rows and columns:
 ```
-D1 = [0 0 0 0
+C1 = [0 0 0 0
       1 0 0 1 
       1 1 0 1
       1 0 0 0];
@@ -38,7 +38,7 @@ Below are matrix with pairwise comparisons and rating scores for DS2. Notice,
 that condition 2 is not connected with the rest via pairwise comparisons, however, linked via rating experiments. 
 
 ```
-D2 = [0 0 1 1 0;
+C2 = [0 0 1 1 0;
       0 0 0 0 0;
       0 0 0 1 1;
       0 0 0 0 1;
@@ -51,13 +51,13 @@ M2 = [5  4  5;
       10 9  9];
 ```
 To align datasets together we first need to link them with pairwise 
-comparisons. Resulting matrix D must look like that:
+comparisons. Resulting matrix C must look like that:
 
 ```
-D = [D1, (comparisons D1 to D2);
-    (comparisons D1 to D2), D2];
+C = [C1, (comparisons C1 to C2);
+    (comparisons C1 to C2), C2];
 
-D = [0 0 0 0 0 3 3 0 0;
+C = [0 0 0 0 0 3 3 0 0;
      1 0 0 1 3 0 4 0 0;
      1 1 0 1 0 0 0 0 3;
      1 0 0 0 0 0 0 0 0;
@@ -102,7 +102,7 @@ We now can run the code to unify disjoint datasets together:
 ```
 % datasets_sizes is a 1xT array, holding sizes of the disjoint datasets, here
 % T is the number of datasets.
-[Q,a,b,c] = mixing(D,M, datasets_sizes)
+[Q,a,b,c] = mixing(C,M, datasets_sizes)
 
 ```
 
