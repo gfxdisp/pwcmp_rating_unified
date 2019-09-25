@@ -1,10 +1,22 @@
 function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
     % Plot the true quality scores versus predicted and calculate errors
-    figure
+    H = figure;
+    width = 36;
+    height = 12;
+    oldUnits = get(H,'Units');
+    set( H, 'Units', 'centimeters' );
+    figPos = get(H,'Position');
+    figPos(3) = width;
+    figPos(4) = height;
+    set(H,'Position', figPos);
+    set(H,'PaperPosition', [0 0 width height] );
+    set( H, 'Units', oldUnits );
+    
+    
     subplot(1,3,1)
     plot(Q_true(1:params.dataset_sizes(1)),Q_mixing(1:params.dataset_sizes(1)),'g*')
     hold on 
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mixing(params.dataset_sizes(1)+1:end),'b*')
+    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mixing(params.dataset_sizes(1)+1:end),'bo')
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')
@@ -14,7 +26,7 @@ function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
     subplot(1,3,2)
     plot(Q_true(1:params.dataset_sizes(1)),Q_mos(1:params.dataset_sizes(1)),'g*')
     hold on
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mos(params.dataset_sizes(1)+1:end),'b*')
+    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mos(params.dataset_sizes(1)+1:end),'bo')
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')
@@ -24,10 +36,11 @@ function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
     subplot(1,3,3)
     plot(Q_true(1:params.dataset_sizes(1)),Q_pwc(1:params.dataset_sizes(1)),'g*')
     hold on 
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_pwc(params.dataset_sizes(1)+1:end),'b*')
+    plot(Q_true(params.dataset_sizes(1)+1:end),Q_pwc(params.dataset_sizes(1)+1:end),'bo')
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')
     ylabel('Scaled pairwise comparisons (JOD)')
 
+    set(findall(H,'-property','FontSize'),'FontSize',14)
 end

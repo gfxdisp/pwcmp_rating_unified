@@ -1,22 +1,25 @@
-function [Q, a, b, c] = mixing(D, M, datasets)
+function [Q, a, b, c] = mixing(D, M, datasets_sizes)
 % Scaling method for pairwise comparisons & rating
 %
-% [Q, a, b, c] = mixing(D, M, datasets)
+% [Q, a, b, c] = mixing(D, M, datasets_sizes)
 %
 % D - NxN matrix with positive integers. D(i,j) = k means that the
-%     condition i was better than j in k number of trials.
-% M - NxJ matrix with collected ratings, where J is the number of 
-% observers. If a rating was no collected for a specific observer or object
+%     condition i was better than j in k number of trials. N - is the total
+%     number of conditions in all datasets.
+% M - NxK matrix with collected ratings, where K is the number of 
+% observers. If a rating was not collected for a specific observer or object
 % just fill it with NaNs.
-% datasets - initial guess for the scale (used as first point for the 
-% optimisation).
+% datasets_sizes - 1d array containing number of conditions in each of the 
+% datasets.
 
-% Note that D and M need to be ordered in the same fashion
+% Note that D and M must have condition scores in the same order
 
+% The methd returns:
+%
 % Q - Quality scale. The difference of 1 corresponds to
 %     75% of answers selecting one condition over another.
-% a, b and c - trained parameters that indicate scale and noise. c is 
-% associated to the noise of rating vs pairwise comparisons, if c > 1 the 
+% a, b and c - parameters that indicate scale and noise. c is the relative 
+% noisiness of rating versus pairwise comparisons scales, if c > 1 the 
 % noise of rating is larger than that of pwc. 
 %
 % The condition with index 1 (the first row in D) has the score fixed at 
@@ -36,7 +39,11 @@ if( size(D,1) ~= size(D,2) )
     error( 'The comparison matrix must be square' );
 end
 
-numb_datasets = numel(datasets);
+if( size(D,1) ~= size(M,1) )
+    error( 'Matrices M and D must be of the same size' );
+end
+
+numb_datasets = numel(datasets_sizes);
 
 options = optimset( 'Display', 'off', 'LargeScale', 'off', 'MaxIter', 5000 );
 
@@ -87,7 +94,7 @@ Q  = [0;Q(1:N-1)];
         b = [];
         c = [];
         for dd = 1:numb_datasets
-            len_ds = datasets(dd);
+            len_ds = datasets_sizes(dd);
             a = [a; ones(len_ds,1)*at(dd)];
             b = [b; ones(len_ds,1)*bt(dd)]; 
             c = [c; ones(len_ds,1)*ct(dd)]; 

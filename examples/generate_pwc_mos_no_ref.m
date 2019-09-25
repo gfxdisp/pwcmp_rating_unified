@@ -1,4 +1,4 @@
-function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
+function [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(q_true, params)
 % Function to generate simulated data - pairwise comparisons and mean
 % opinion scores from the true quality scores
 % 
@@ -64,7 +64,6 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
         q_ids1 = start_id1:start_id1+params.dataset_sizes(ii)-1;
         q_ids2 = start_id2:start_id2+params.dataset_sizes(ii+1)-1;
 
-        % 
         for jj=1:params.numb_cross_ds_pairs(ii)
             cmps = 0;
             q_ids1s = q_ids1(randperm(length(q_ids1)));
@@ -104,7 +103,9 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
         end
         rid_st = sum(params.rating_per_ds(1:(ii-1)))+1; 
         rid_end = rid_st+params.rating_per_ds(ii)-1;
+        
         mos_mat(ds_id:ds_id+params.dataset_sizes(ii)-1,rid_st:rid_end) = M_ds;
         ds_id = params.dataset_sizes(ii)+1;
+        
     end
 end

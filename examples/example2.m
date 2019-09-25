@@ -1,18 +1,21 @@
 clear all
 
+% Add path to the mixing code
+addpath ('../')
+
 % Number of conditions in each of the datasets
-params.dataset_sizes = [10,14];
+params.dataset_sizes = [4,5];
 
 % Number of observers per dataset in rating experiment
-params.rating_per_ds = [10,10];
+params.rating_per_ds = [5,3];
 
 % Number of cross dataset pairs
 % Size of the array must be (number_of_datasets - 1) 
-params.numb_cross_ds_pairs = [20];
+params.numb_cross_ds_pairs = [6];
 
 % Number of times each cross dataset pair is compared 
 % Size of the array must be (number_of_datasets - 1) 
-params.numb_comps_per_cross_ds_pair = [10];
+params.numb_comps_per_cross_ds_pair = [6];
 
 % Number of bootstrap experiments
 n_exps = 10;
@@ -32,7 +35,7 @@ RMSE = [];
 SROCC = [];
 for ii =1:n_exps
     % Generate pairwise comparison and rating matrices
-    [pwc_mat, mos_mat] = generate_pwc_mos(Q_true,params);
+    [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(Q_true,params);
     
     % Unify the scores 
     [Q_mixing, a, b, c] = mixing(pwc_mat, mos_mat, params.dataset_sizes);
