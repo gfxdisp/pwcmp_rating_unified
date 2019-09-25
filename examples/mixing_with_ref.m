@@ -81,6 +81,9 @@ a = params(end-3*numb_datasets+1:end-2*numb_datasets);
 b = params(end-2*numb_datasets+1:end-1*numb_datasets);
 c = params(end-1*numb_datasets+1:end);
 
+
+% Since every dataset has refernces, as the first condition, set their
+% scores to 0.
 Q = [];
 start_ii = 1;
 for ii = 1:numb_datasets

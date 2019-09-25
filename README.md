@@ -8,35 +8,34 @@ If using the code please cite:
 
 ## Usage
 
-The code for this example can be found in the examples folder (example1.m) 
-To produce a unified scale we use a pairwise comparison matrix D (NxN) and 
-a rating matrix M (NxK) and datasets_sizes (1xT), where N is 
-the total number of conditions and K is the total number of observers.
+The code for this example can be found in the examples folder (example1.m). 
+To produce a unified scale we need a pairwise comparison matrix D (NxN) and 
+a rating matrix M (NxK), where N is the total number of conditions and K is 
+the total number of subjects in rating experiments.
 
-For example we want to scale together two datasets with 4 and 5 conditions. 
+Let's consider an example where we want to scale together two datasets - DS1 and DS2 with N1 = 4 and N2 = 5 conditions. 
 Both datasets contain pairwise comparisons and rating measurements. 
 
-Matrix with pairwise comparisons has N1 rows and collumns, where N1 is the 
-size of the DS1.
+Matrix with pairwise comparisons for DS1 has N1 rows and columns:
 ```
 D1 = [0 0 0 0
       1 0 0 1 
       1 1 0 1
       1 0 0 0];
 ```
-Matrix with rating has N1 rows and K1 collumns, where K1 is the number of 
-observers giving their measurements 
+Matrix with rating has N1 rows and K1 columns, where K1 is the number of 
+subjects participating in rating experiments for DS1: 
 ```
 M1 = [3 1 3 1 2;
       NaN NaN NaN NaN NaN;
       6 7 7 7 7;
       7 6 9 7 8];
 ```
-Notice that in the case of DS1 we have full matrix of comparisons, but one 
+Notice that in the case of DS1 we have a full matrix of comparisons, but one 
 row in the rating matrix is missing.
 
-For the DS2 condition 2 is not connected with the rest via pairwise
-comparisons, however, linked via rating experiments. 
+Below are matrix with pairwise comparisons and rating scores for DS2. Notice, 
+that condition 2 is not connected with the rest via pairwise comparisons, however, linked via rating experiments. 
 
 ```
 D2 = [0 0 1 1 0;
@@ -56,7 +55,7 @@ comparisons. Resulting matrix D must look like that:
 
 ```
 D = [D1, (comparisons D1 to D2);
-    (comparisons D2 to D1), D2];
+    (comparisons D1 to D2), D2];
 
 D = [0 0 0 0 0 3 3 0 0;
      1 0 0 1 3 0 4 0 0;
@@ -75,27 +74,40 @@ experiments it is common to have a reference condition for each dataset.
 The scores of all other conditions are assigned relative to it. In this case rating 
 matrices for each of the datasets must be converted to DMOS by subtracting 
 from all entries the value of the first (reference) condition, i.e. M1 = M1 - M1(1,:). 
-Example of experiments with reference can be found in example3.m. For that 
-use mixing_ref.m
+An example of unifying datasets with reference can be found in example3.m. Note, that for that 
+example with use a slightly different optimisation procedure: mixing_ref.m
 
-To improve the convergence we also recomend dividing the mean opinion scores
-by the maximum allowed score in the rating experiment.
+To improve the convergence we also recommend dividing the mean opinion scores
+by the maximum possible score of the rating experiment.
 
 The resultant matrix with mean opinion scores will look like that:
 
 ```
 M = [M1,            (NaN,...,NaN);
     (NaN,...,NaN),   M2];
+
+M = [3    1    3    1    2    NaN  NaN  NaN;
+     NaN  NaN  NaN  NaN  NaN  NaN  NaN  NaN;
+     6    7    7    7    7    NaN  NaN  NaN;
+     7    6    9    7    8    NaN  NaN  NaN;
+     NaN  NaN  NaN  NaN  NaN  5    4    5;
+     NaN  NaN  NaN  NaN  NaN  3    4    4;
+     NaN  NaN  NaN  NaN  NaN  4    6    4;
+     NaN  NaN  NaN  NaN  NaN  4    6    7;
+     NaN  NaN  NaN  NaN  NaN  10   9    9];
+
 ```
 We now can run the code to unify disjoint datasets together:
 
 ```
+% datasets_sizes is a 1xT array, holding sizes of the disjoint datasets, here
+% T is the number of datasets.
 [Q,a,b,c] = mixing(D,M, datasets_sizes)
 
 ```
 
-Q's are the unified quality scores for all datasets. a,b and c are (1xT) 
-and are the parameters of the model for each of the datasets.
+The function returns: Q - the unified quality scores for all datasets. a,b and c - (1xT) arrays
+with the parameters of the model for each of the datasets.
 
 For more please see:
 ```
