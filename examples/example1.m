@@ -33,9 +33,16 @@ datasets_sizes = [4,5];
 [Q_mixing, a, b, c] = mixing(C, M, datasets_sizes);
     
 
-figure
-plot(Q_true,Q_mixing,'*')
+H = figure;
+plot(Q_true(1:4),Q_mixing(1:4),'b*')
+hold on
+plot(Q_true(5:end),Q_mixing(5:end),'ro')
+legend({'Dataset 1', 'Dataset 2'})
+grid on
 ylabel('Predicted')
 xlabel('True')
-
+xlim([0 1])
+ylim([0 1])
+pbaspect([1 1 1])
+set(findall(H,'-property','FontSize'),'FontSize',14)
 
