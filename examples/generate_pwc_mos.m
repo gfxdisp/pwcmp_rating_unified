@@ -1,4 +1,4 @@
-function [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(q_true, params)
+function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
 % Function to generate simulated data - pairwise comparisons and mean
 % opinion scores from the true quality scores
 % 
@@ -39,19 +39,21 @@ function [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(q_true, params)
     %% Generate PWC matrix
     
     pwc_mat = zeros(sum(params.dataset_sizes));
-    % Within dataset comparisons = (n^2 - n), where n is the size of the
+    % Within dataset comparisons = 2*(n^2 - n), where n is the size of the
     % dataset, everything compared to everything
     for ii=1:numel(params.dataset_sizes)
         C_ds = zeros(params.dataset_sizes(ii));
         rid_st = sum(params.dataset_sizes(1:(ii-1)))+1; 
         rid_end = rid_st+params.dataset_sizes(ii)-1; 
         q = q_true(rid_st:rid_end);
-
-        for kk = 1:params.dataset_sizes(ii)
-            for jj = 1:kk-1
-                C_ds = simulate_pwc_choice(q,kk,jj,C_ds);
+        for tt = 1:2
+            for kk = 1:params.dataset_sizes(ii)
+                for jj = 1:kk-1
+                    C_ds = simulate_pwc_choice(q,kk,jj,C_ds);
+                end
             end
         end
+        
         pwc_mat(rid_st:rid_end,rid_st:rid_end)=C_ds;
     end
 
@@ -103,7 +105,9 @@ function [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(q_true, params)
         end
         rid_st = sum(params.rating_per_ds(1:(ii-1)))+1; 
         rid_end = rid_st+params.rating_per_ds(ii)-1;
-        
+        if params.ref 
+            M_ds = M_ds - M_ds(1,:);
+        end
         mos_mat(ds_id:ds_id+params.dataset_sizes(ii)-1,rid_st:rid_end) = M_ds;
         ds_id = params.dataset_sizes(ii)+1;
         

@@ -12,11 +12,19 @@ function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
     set(H,'PaperPosition', [0 0 width height] );
     set( H, 'Units', oldUnits );
     
+    COLORs = lines( numel(params.dataset_sizes) );
+    marker_style= {'>','o','*','s','+','x'};
     
     subplot(1,3,1)
-    plot(Q_true(1:params.dataset_sizes(1)),Q_mixing(1:params.dataset_sizes(1)),'g*')
-    hold on 
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mixing(params.dataset_sizes(1)+1:end),'bo')
+    start_id  = 1;
+    for ii = 1:numel(params.dataset_sizes)
+        end_id  = sum(params.dataset_sizes(1:ii));
+        scatter(Q_true(start_id:end_id),Q_mixing(start_id:end_id),'Marker', marker_style{mod(ii,size(marker_style,2))+1}, 'MarkerEdgeColor', COLORs(ii,:));
+
+        hold on 
+        start_id = end_id+1;
+    end
+    
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')
@@ -24,9 +32,16 @@ function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
 
     % Plot the true quality scores versus mean opinion scores
     subplot(1,3,2)
-    plot(Q_true(1:params.dataset_sizes(1)),Q_mos(1:params.dataset_sizes(1)),'g*')
-    hold on
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_mos(params.dataset_sizes(1)+1:end),'bo')
+    start_id  = 1;
+    for ii = 1:numel(params.dataset_sizes)
+        end_id  = sum(params.dataset_sizes(1:ii));
+        scatter(Q_true(start_id:end_id),Q_mos(start_id:end_id),'Marker', marker_style{mod(ii,size(marker_style,2))+1}, 'MarkerEdgeColor', COLORs(ii,:));
+
+        hold on 
+        start_id = end_id+1;
+        
+    end
+    
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')
@@ -34,9 +49,17 @@ function [] = plot_results (params, Q_true, Q_mixing, Q_mos, Q_pwc)
 
     % Plot the true quality scores versus scaled pairwise comparisons
     subplot(1,3,3)
-    plot(Q_true(1:params.dataset_sizes(1)),Q_pwc(1:params.dataset_sizes(1)),'g*')
-    hold on 
-    plot(Q_true(params.dataset_sizes(1)+1:end),Q_pwc(params.dataset_sizes(1)+1:end),'bo')
+    start_id  = 1;
+    for ii = 1:numel(params.dataset_sizes)
+        end_id  = sum(params.dataset_sizes(1:ii));
+        scatter(Q_true(start_id:end_id),Q_pwc(start_id:end_id),'Marker', marker_style{mod(ii,size(marker_style,2))+1}, 'MarkerEdgeColor', COLORs(ii,:));
+        hold on 
+        start_id = end_id+1;
+        
+        LABELs{ii} =  strcat ('Dataset: ', num2str(ii));
+    end
+    legend( LABELs, 'Location', 'best');
+    
     pbaspect([1 1 1])
     grid on
     xlabel('True quality scores (JOD)')

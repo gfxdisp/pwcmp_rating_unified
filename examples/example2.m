@@ -17,6 +17,9 @@ params.numb_cross_ds_pairs = [6];
 % Size of the array must be (number_of_datasets - 1) 
 params.numb_comps_per_cross_ds_pair = [6];
 
+% If the merged datasets have reference conditions
+params.ref = false;
+
 % Number of bootstrap experiments
 n_exps = 10;
 
@@ -35,7 +38,7 @@ RMSE = [];
 SROCC = [];
 for ii =1:n_exps
     % Generate pairwise comparison and rating matrices
-    [pwc_mat, mos_mat] = generate_pwc_mos_no_ref(Q_true,params);
+    [pwc_mat, mos_mat] = generate_pwc_mos(Q_true,params);
     
     % Unify the scores 
     [Q_mixing, a, b, c] = mixing(pwc_mat, mos_mat, params.dataset_sizes);
