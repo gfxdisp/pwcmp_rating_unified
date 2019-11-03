@@ -6,6 +6,14 @@ If using the code please cite:
 
 [1] M. Perez-Ortiz, A. Mikhailiuk, E. Zerman, V. Hulusic, G. Valenzise and R. K. Mantiuk, “From pairwise comparisons and rating to a unified quality scale”, Transactions on Image Processing (TIP), 2019. Accessible at https://www.cl.cam.ac.uk/~rkm38/pdfs/perezortiz2019unified_quality_scale.pdf
 
+The scaling procedure achieves several, non-trivial goals:
+
+* Firstly, it relates the quality scores coming from different datasets.
+
+* Secondly, it accounts for the accuracy/sensitivity of the protocol used in each experiment and brings the quality values into a unified scale. 
+
+* Finally, it accounts for the uncertainty in measurements; the conditions that received more measurements have higher impact on the likelihood and the final solution. Overall, such an integrative approach to modeling experimental data leads to more accurate quality estimates and better "ground truth" data.
+
 ## Usage
 
 The code for this example can be found in the examples folder (example1.m). 
