@@ -8,7 +8,7 @@ If using the code please cite:
 
 The scaling procedure achieves several, non-trivial goals:
 
-* Firstly, it relates the quality scores coming from different datasets.
+* Firstly, it relates the quality scores coming from different protocols (rating and pairwise comparisons).
 
 * Secondly, it accounts for the accuracy/sensitivity of the protocol used in each experiment and brings the quality values into a unified scale. 
 
