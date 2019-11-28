@@ -7,21 +7,24 @@ addpath ('../')
 params.dataset_sizes = [4,5];
 
 % Number of observers per dataset in rating experiment
-params.rating_per_ds = [5,3];
+params.rating_per_ds = [4,5];
 
 % Number of cross dataset pairs
 % Size of the array must be (number_of_datasets - 1) 
-params.numb_cross_ds_pairs = [6];
+params.numb_cross_ds_pairs = [10];
 
 % Number of times each cross dataset pair is compared 
 % Size of the array must be (number_of_datasets - 1) 
 params.numb_comps_per_cross_ds_pair = [6];
 
+% Number of within dataset comparisons
+params.within_ds_comparisons = 6;
+
 % If the merged datasets have reference conditions
 params.ref = false;
 
 % Number of bootstrap experiments
-n_exps = 10;
+n_exps = 100;
 
 % Generate true quality scores between 0 and 1
 Q_true = sort(rand(1,params.dataset_sizes(1)));

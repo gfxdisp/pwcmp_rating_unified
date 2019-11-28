@@ -39,14 +39,14 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
     %% Generate PWC matrix
     
     pwc_mat = zeros(sum(params.dataset_sizes));
-    % Within dataset comparisons = 2*(n^2 - n), where n is the size of the
+    % Within dataset comparisons = params.within_ds_comparisons*(n^2 - n), where n is the size of the
     % dataset, everything compared to everything
     for ii=1:numel(params.dataset_sizes)
         C_ds = zeros(params.dataset_sizes(ii));
         rid_st = sum(params.dataset_sizes(1:(ii-1)))+1; 
         rid_end = rid_st+params.dataset_sizes(ii)-1; 
         q = q_true(rid_st:rid_end);
-        for tt = 1:2
+        for tt = 1:params.within_ds_comparisons
             for kk = 1:params.dataset_sizes(ii)
                 for jj = 1:kk-1
                     C_ds = simulate_pwc_choice(q,kk,jj,C_ds);
@@ -57,26 +57,24 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
         pwc_mat(rid_st:rid_end,rid_st:rid_end)=C_ds;
     end
 
-    % Generate cross-dataset comparisons - overall number of comparisons is
-    % total number of conditions in two datasets being connected, i.e.
-    % datasets(ii) + datasets(ii+1)
+    % Generate cross-dataset comparisons
     start_id1 = 1;
     for ii = 1:(numel(params.dataset_sizes)-1)
         start_id2 = start_id1+params.dataset_sizes(ii);
         q_ids1 = start_id1:start_id1+params.dataset_sizes(ii)-1;
         q_ids2 = start_id2:start_id2+params.dataset_sizes(ii+1)-1;
-
-        for jj=1:params.numb_cross_ds_pairs(ii)
-            cmps = 0;
-            q_ids1s = q_ids1(randperm(length(q_ids1)));
-            q_ids2s = q_ids2(randperm(length(q_ids2)));
-            id1 = q_ids1s(1);
-            id2 = q_ids2s(1);
-            while cmps<params.numb_comps_per_cross_ds_pair(ii)
+        q_ids1 = repmat(q_ids1,[1,params.dataset_sizes(ii+1)]);
+        q_ids2 = repmat(q_ids2,[1,params.dataset_sizes(ii)]);
+        to_compare = randperm(params.dataset_sizes(ii+1)*params.dataset_sizes(ii));
+        
+        for jj = 1:params.numb_comps_per_cross_ds_pair(ii)
+            id1 = q_ids1(to_compare(jj));
+            id2 = q_ids2(to_compare(jj));
+            for kk=1:params.numb_cross_ds_pairs(ii)
                 [pwc_mat] = simulate_pwc_choice(q_true,id1,id2,pwc_mat);
-                cmps = cmps+1;
             end
         end
+
 
         start_id1 = start_id2;
 
@@ -85,8 +83,8 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
     %% Generate MOS matrix 
     % Each dataset has the rating scores generated from
     % N(a*q_true+b,c*sigma/sqrt(2))
-    % Generate a for each dataset at random from 0 5 interval
-    a = randi([5,10],1,numel(params.dataset_sizes));
+    % Generate a for each dataset at random from 1 5 interval
+    a = randi([1,5],1,numel(params.dataset_sizes));
     % Generate bs at random
     b = a*rand();
     % Generate cs at random
@@ -108,7 +106,7 @@ function [pwc_mat, mos_mat] = generate_pwc_mos(q_true, params)
         if params.ref 
             M_ds = M_ds - M_ds(1,:);
         end
-        mos_mat(ds_id:ds_id+params.dataset_sizes(ii)-1,rid_st:rid_end) = M_ds;
+        mos_mat(ds_id:ds_id+params.dataset_sizes(ii)-1,rid_st:rid_end) = max(round(M_ds),0);
         ds_id = params.dataset_sizes(ii)+1;
         
     end
