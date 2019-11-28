@@ -45,7 +45,7 @@ end
 
 numb_datasets = numel(datasets_sizes);
 
-options = optimset( 'Display', 'off', 'LargeScale', 'off', 'MaxIter', 10000 );
+options = optimset( 'Display', 'off', 'LargeScale', 'off', 'MaxIter', 10000, 'MaxFunEvals', 10000 );
 
 % Find non-zero elements in matrix D+D', i.e. compared conditions
 Dt = D';
