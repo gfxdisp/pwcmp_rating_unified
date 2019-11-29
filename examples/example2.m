@@ -1,3 +1,5 @@
+% Example with adjustable parameters, no reference
+
 clear all
 
 % Add path to the mixing code
